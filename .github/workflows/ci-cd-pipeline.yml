@@ -2,13 +2,15 @@ name: Node.js CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      security-events: write
 
     steps:
       - name: Checkout repository
@@ -25,6 +27,9 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Ejecutar Tests con Karma
+        run: npx karma start karma.conf.js --single-run
 
       - name: Lint code with ESLint
         run: npx eslint . --fix
@@ -46,11 +51,13 @@ jobs:
       - name: Install Sonar Scanner
         run: npm install -g sonar-scanner
 
-      - name: SonarCloud Quality Scan
-        uses: SonarSource/sonarcloud-github-action@v2
+      - name: Análisis de código con SonarCloud
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          npx sonar-scanner \-Dsonar.projectKey=carlitroxxx_Evaluacion-Parcial-2-Devops \-Dsonar.organization=carlitroxxx \-Dsonar.sources=./src \-Dsonar.host.url=https://sonarcloud.io/ \-Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
