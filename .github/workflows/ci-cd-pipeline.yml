@@ -1,4 +1,4 @@
-name: Node.js CI/CD Pipeline
+name: Pipeline CI/CD de Node.js
 
 on:
   push:
@@ -13,28 +13,28 @@ jobs:
       security-events: write
 
     steps:
-      - name: Checkout repository
+      - name: Descargar repositorio
         uses: actions/checkout@v4
 
-      - name: Set up Node.js 20
+      - name: Configurar Node.js versión 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies (locked)
+      - name: Instalar dependencias (bloqueadas)
         run: npm ci
 
-      - name: Run tests
+      - name: Ejecutar pruebas unitarias
         run: npm test
 
-      - name: Ejecutar Tests con Karma
+      - name: Ejecutar pruebas con Karma
         run: npx karma start karma.conf.js --single-run
 
-      - name: Lint code with ESLint
+      - name: Analizar código con ESLint
         run: npx eslint . --fix
 
-      - name: Snyk Security Scan
+      - name: Escaneo de seguridad con Snyk
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -42,30 +42,34 @@ jobs:
           command: test
         continue-on-error: true
 
-      - name: Set up Java for SonarCloud
+      - name: Configurar Java para SonarCloud
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Sonar Scanner
+      - name: Instalar Sonar Scanner
         run: npm install -g sonar-scanner
 
-      - name: Análisis de código con SonarCloud
+      - name: Análisis de calidad de código con SonarCloud
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          npx sonar-scanner \-Dsonar.projectKey=carlitroxxx_Evaluacion-Parcial-2-Devops \-Dsonar.organization=carlitroxxx \-Dsonar.sources=./src \-Dsonar.host.url=https://sonarcloud.io/ \-Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          npx sonar-scanner \
+            -Dsonar.projectKey=carlitroxxx_Evaluacion-Parcial-2-Devops \
+            -Dsonar.organization=carlitroxxx \
+            -Dsonar.sources=./src \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-
-      - name: Log in to Docker Hub
+      - name: Iniciar sesión en Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Construir y subir imagen Docker
         uses: docker/build-push-action@v6
         with:
           context: .

@@ -13,7 +13,6 @@ services:
       DB_NAME: evaluacion
     depends_on:
       - db
-    restart: unless-stopped
 
   db:
     image: mysql:8.0
@@ -25,7 +24,6 @@ services:
       MYSQL_PASSWORD: carlitroxx11
     ports:
       - "3306:3306"
-    restart: unless-stopped
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -39,4 +37,3 @@ services:
       PMA_PASSWORD: carlitroxx11
     depends_on:
       - db
-    restart: unless-stopped
