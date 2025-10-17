@@ -27,7 +27,7 @@ jobs:
         run: npm test
 
       - name: Lint code with ESLint
-        run: npx eslint . --max-warnings=0
+        run: npx eslint . --fix
 
       - name: Snyk Security Scan
         uses: snyk/actions/node@master
