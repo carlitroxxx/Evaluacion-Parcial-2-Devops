@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    image: carlitroxx/evaluacion:latest
+    container_name: mi-app-node
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_USER: carlitroxx
+      DB_PASSWORD: carlitroxx11
+      DB_NAME: evaluacion
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    container_name: mi-db-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: evaluacion
+      MYSQL_USER: carlitroxx
+      MYSQL_PASSWORD: carlitroxx11
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: mi-phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: carlitroxx
+      PMA_PASSWORD: carlitroxx11
+    depends_on:
+      - db
+    restart: unless-stopped
