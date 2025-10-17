@@ -41,3 +41,23 @@ En el repositorio de GitHub, agrega los siguientes Secrets:
  `SONAR_TOKEN` = Token de autenticación de SonarCloud
  `SONAR_ORGANIZATION` = Nombre de la organización en SonarCloud
  `SNYK_TOKEN` = Token de autenticación de Snyk
+
+
+ ## Cómo levantar los contenedores
+
+Desde la raíz del proyecto (donde está `docker-compose.yml`):
+
+### Construir e iniciar en segundo plano
+```bash
+docker compose up -d --build
+```
+
+### Ver estado
+```bash
+docker ps
+docker compose ps
+
+### Detener
+```bash
+docker compose down
+```
